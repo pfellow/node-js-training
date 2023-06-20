@@ -19,7 +19,7 @@ exports.getProduct = (req, res, next) => {
     .then(([product]) => {
       res.render('shop/product-detail', {
         product: product[0],
-        pageTitle: product.title + ' - Details',
+        pageTitle: product[0].title + ' - Details',
         path: '/products'
       });
     })

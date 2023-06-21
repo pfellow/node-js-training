@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const rootDir = require('./utils/path');
 const errorsController = require('./controllers/errors');
+const sequelize = require('./utils/database');
 
 const app = express();
 
@@ -21,5 +22,14 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorsController.get404);
+
+sequelize
+  .sync()
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.listen(3000);

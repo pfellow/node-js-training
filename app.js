@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoDBSession = require('connect-mongodb-session')(session);
@@ -23,6 +24,27 @@ const store = new MongoDBSession({
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -31,7 +53,9 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 app.use(express.static(path.join(rootDir, 'public')));
+app.use('/images', express.static(path.join(rootDir, 'images')));
 app.use(
   session({
     secret: 'mySecret',
@@ -75,6 +99,7 @@ app.use('/500', errorsController.get500);
 app.use(errorsController.get404);
 
 app.use((error, req, res, next) => {
+  console.log(error);
   res.status(500).render('500', {
     pageTitle: 'Ups! Error!',
     path: '/500'

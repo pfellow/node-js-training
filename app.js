@@ -8,13 +8,15 @@ const mongoose = require('mongoose');
 const MongoDBSession = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const dotenv = require('dotenv');
 
 const rootDir = require('./utils/path');
 const errorsController = require('./controllers/error');
 const User = require('./models/user');
 
-const MONGODB_URI =
-  'mongodb+srv://pfellow:f5jsJ4YK8IYWdtbI@cluster0.nrdbgre.mongodb.net/shop';
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const app = express();
 const store = new MongoDBSession({

@@ -1,0 +1,8 @@
+const stripe = Stripe(
+  'pk_test_51NSSagIE2tdd3fXxcVLUXwx6TA7m7XwVNmbwV3Mu5kRchlOF0zFr786dYNElGDXXJnQh5lrlOlhcg5avY8c7LHgl00cThFWe3y'
+);
+orderBtn.addEventListener('click', () => {
+  stripe.redirectToCheckout({
+    sessionId: '<%= sessionId %>'
+  });
+});
